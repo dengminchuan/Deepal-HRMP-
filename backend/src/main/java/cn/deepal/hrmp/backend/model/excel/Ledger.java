@@ -16,8 +16,8 @@ import lombok.Data;
  */
 @Data
 public class Ledger {
-    @ExcelProperty(converter = IntegerNumberConverter.class)
-    private int id;
+
+    private String id;
 
     private String month;
 
@@ -42,14 +42,14 @@ public class Ledger {
     private String teacherName;
 
     private String teacherId;
-    @ExcelProperty(converter = IntegerNumberConverter.class)
-    private int planNum;
-    @ExcelProperty(converter = IntegerNumberConverter.class)
-    private int participateNum;
+
+    private String planNum;
+
+    private String participateNum;
 
     private String participatePercentage;
-    @ExcelProperty(converter = DoubleNumberConverter.class)
-    private double satisfaction;
+
+    private String satisfaction;
 
     private String money;
 

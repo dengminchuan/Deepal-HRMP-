@@ -14,30 +14,28 @@
  * limitations under the License.
  */
 
-package cn.deepal.hrmp.backend.demos.web;
+package cn.deepal.hrmp.backend.controller;
 
-/**
- * @author <a href="mailto:chenxilzx1@gmail.com">theonefx</a>
- */
-public class User {
 
-    private String name;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-    private Integer age;
+import java.util.List;
 
-    public String getName() {
-        return name;
+
+@RestController("/excel")
+public class ExcelController {
+    /**
+     * 合并上传文件夹中的Excel
+     * @param files
+     * @return 合并后的文件
+     */
+    @RequestMapping("/hello")
+    @PostMapping("/uploadMergeExcels")
+    public String uploadMergeExcels(List<MultipartFile> files) {
+
+
+        return "hello";
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Integer getAge() {
-        return age;
-    }
-
-    public void setAge(Integer age) {
-        this.age = age;
-    }
 }
