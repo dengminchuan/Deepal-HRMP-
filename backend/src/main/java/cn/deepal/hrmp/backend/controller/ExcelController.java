@@ -18,15 +18,16 @@ package cn.deepal.hrmp.backend.controller;
 
 
 import cn.deepal.hrmp.backend.model.excel.Ledger;
+import cn.deepal.hrmp.backend.service.ExcelService;
 import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.excel.read.listener.ReadListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,10 +38,13 @@ import java.util.List;
 @RequestMapping("/excel")
 public class ExcelController {
 
+    @Resource
+    private ExcelService excelService;
+
 
     //测试接口
     @GetMapping("hello")
-    public String hello(){
+    public String hello(HttpServletResponse response){
         return "hello";
     }
     /**
@@ -48,27 +52,25 @@ public class ExcelController {
      * @param files
      * @return 合并后的文件
      */
-    @PostMapping("/uploadMergeExcels")
-    public String uploadMergeExcels(List<MultipartFile> files) throws IOException {
-        ArrayList<Ledger> ledgers = new ArrayList<>();
-        //加载所有excel到arraylist中
-        for (MultipartFile file : files) {
-            EasyExcel.read(file.getInputStream(), Ledger.class, new ReadListener<Ledger>() {
-                @Override
-                public void invoke(Ledger ledger, AnalysisContext analysisContext) {
-                    ledgers.add(ledger);
-                }
-
-                @Override
-                public void doAfterAllAnalysed(AnalysisContext analysisContext) {
-                    log.info("analysis file:"+file.getName()+"successfully!");
-                }
-            });
+    @PostMapping("/uploadLedgerExcels")
+    public void uploadLedgerExcels(List<MultipartFile> files,HttpServletResponse response) throws IOException {
+        if(!files.isEmpty()){
+           List<Ledger> ledgers=excelService.readAndMergeLedgerExcels(files);
+            excelService.analyse(ledgers);
+            setExcelResponse(response);
         }
 
 
-        return "hello";
     }
+
+    private void setExcelResponse(HttpServletResponse response) throws UnsupportedEncodingException {
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setCharacterEncoding("utf-8");
+        // 这里URLEncoder.encode可以防止中文乱码 当然和easyexcel没有关系
+        String fileName = URLEncoder.encode("测试", "UTF-8").replaceAll("\\+", "%20");
+        response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
+    }
+
     @GetMapping("/download")
     public void downLoad(HttpServletResponse response) throws IOException {
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
