@@ -17,25 +17,68 @@
 package cn.deepal.hrmp.backend.controller;
 
 
+import cn.deepal.hrmp.backend.model.excel.Ledger;
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.read.listener.ReadListener;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 
 
-@RestController("/excel")
+@Slf4j
+@RestController
+@RequestMapping("/excel")
 public class ExcelController {
+
+
+    //测试接口
+    @GetMapping("hello")
+    public String hello(){
+        return "hello";
+    }
     /**
      * 合并上传文件夹中的Excel
      * @param files
      * @return 合并后的文件
      */
-    @RequestMapping("/hello")
     @PostMapping("/uploadMergeExcels")
-    public String uploadMergeExcels(List<MultipartFile> files) {
+    public String uploadMergeExcels(List<MultipartFile> files) throws IOException {
+        ArrayList<Ledger> ledgers = new ArrayList<>();
+        //加载所有excel到arraylist中
+        for (MultipartFile file : files) {
+            EasyExcel.read(file.getInputStream(), Ledger.class, new ReadListener<Ledger>() {
+                @Override
+                public void invoke(Ledger ledger, AnalysisContext analysisContext) {
+                    ledgers.add(ledger);
+                }
+
+                @Override
+                public void doAfterAllAnalysed(AnalysisContext analysisContext) {
+                    log.info("analysis file:"+file.getName()+"successfully!");
+                }
+            });
+        }
 
 
         return "hello";
+    }
+    @GetMapping("/download")
+    public void downLoad(HttpServletResponse response) throws IOException {
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setCharacterEncoding("utf-8");
+        // 这里URLEncoder.encode可以防止中文乱码 当然和easyexcel没有关系
+        String fileName = URLEncoder.encode("测试", "UTF-8").replaceAll("\\+", "%20");
+        response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
+        ArrayList<Ledger> ledgers = new ArrayList<>();
+        ledgers.add(new Ledger("1","1","1"));
+        EasyExcel.write(response.getOutputStream(), Ledger.class).sheet("模板").doWrite(ledgers);
     }
 
 }

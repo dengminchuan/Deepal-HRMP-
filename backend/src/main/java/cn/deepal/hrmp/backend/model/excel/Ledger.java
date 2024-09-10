@@ -58,8 +58,9 @@ public class Ledger {
     private String notes;
 
 
-
-
-
-
+    public Ledger(String id, String month, String trainingType) {
+        this.id = id;
+        this.month = month;
+        this.trainingType = trainingType;
+    }
 }
