@@ -59,8 +59,6 @@ public class ExcelController {
             excelService.analyse(ledgers);
             setExcelResponse(response);
         }
-
-
     }
 
     private void setExcelResponse(HttpServletResponse response) throws UnsupportedEncodingException {
