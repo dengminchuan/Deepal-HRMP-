@@ -6,12 +6,20 @@
 package cn.deepal.hrmp.backend.model;
 
 import cn.deepal.hrmp.backend.enums.StudyStatusEnum;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 数据库中存储的学习记录
  */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class StudyRecord {
-
+    @TableId(type = IdType.AUTO)
     private long id;
 
     private int month;
@@ -29,5 +37,7 @@ public class StudyRecord {
     private String className;
     //状态:通过 考试失败 请假 旷课
     private int studyStatus;
+
+
 
 }

@@ -18,4 +18,6 @@ public interface ExcelService {
     List<Ledger> readAndMergeLedgerExcels(List<MultipartFile> files) throws IOException;
 
     void analyse(List<Ledger> ledgers);
+
+    void loadStudyRecord2DataBase(String fileName);
 }

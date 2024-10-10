@@ -7,14 +7,18 @@ package cn.deepal.hrmp.backend.model.excel;
 
 
 import cn.deepal.hrmp.backend.enums.StudyStatusEnum;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Excel存储的培训记录
  */
-
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class StudyRecordForExcel {
 
-    private long id;
 
     private int month;
     //工号

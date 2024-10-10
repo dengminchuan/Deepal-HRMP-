@@ -5,7 +5,9 @@
 //@software:IntelliJ IDEA
 package cn.deepal.hrmp.backend.service.impl;
 
+import cn.deepal.hrmp.backend.model.StudyRecord;
 import cn.deepal.hrmp.backend.model.excel.Ledger;
+import cn.deepal.hrmp.backend.model.excel.StudyRecordForExcel;
 import cn.deepal.hrmp.backend.service.ExcelService;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.context.AnalysisContext;
@@ -41,9 +43,43 @@ public class ExcelServiceImpl implements ExcelService {
         }
         return ledgers;
     }
-    //todo:分析合并后的数据,输出新的excel表
     @Override
     public void analyse(List<Ledger> ledgers) {
 
     }
+
+    @Override
+    public void loadStudyRecord2DataBase(String fileName) {
+
+        EasyExcel.read(fileName, StudyRecordForExcel.class, new ReadListener<StudyRecordForExcel>() {
+            @Override
+            public void invoke(StudyRecordForExcel studyRecordForExcel, AnalysisContext analysisContext) {
+                //处理每一条excel数据
+                StudyRecord studyRecord=transferExcel2Database(studyRecordForExcel);
+
+            }
+            @Override
+            public void doAfterAllAnalysed(AnalysisContext analysisContext) {
+
+            }
+        }).sheet("出勤及考试情况").doRead();
+    }
+
+    private StudyRecord transferExcel2Database(StudyRecordForExcel studyRecordForExcel) {
+        StudyRecord studyRecord = new StudyRecord();
+        studyRecord.setMonth(studyRecordForExcel.getMonth());
+        studyRecord.setJobId(studyRecordForExcel.getJobId());
+        studyRecord.setDepartment(studyRecordForExcel.getDepartment());
+        studyRecord.setArea(studyRecordForExcel.getArea());
+        studyRecord.setBusinessUnit(studyRecordForExcel.getBusinessUnit());
+        studyRecord.setName(studyRecordForExcel.getName());
+        studyRecord.setClassName(studyRecordForExcel.getClassName());
+
+        return null;
+    }
+
+    public static void main(String[] args) {
+        new ExcelServiceImpl().loadStudyRecord2DataBase("C:\\Users\\lv jiang er hao\\Desktop\\深蓝日新课堂学习情况（2024年3月15日前入职的L11以下非管理人员）.xlsx");
+    }
+
 }
