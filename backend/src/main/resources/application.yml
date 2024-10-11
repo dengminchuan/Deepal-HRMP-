@@ -2,3 +2,15 @@ server:
   port: 8080
   servlet:
     context-path: /deepal/HRMP
+mybatis-plus:
+  global-config:
+    db-config:
+      logic-delete-field: isDelete # 全局逻辑删除字段名
+      logic-delete-value: 1 # 逻辑已删除值
+      logic-not-delete-value: 0 # 逻辑未删除值
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: Dmc162272.
+    url: jdbc:mysql://cd-cdb-dgstchog.sql.tencentcdb.com:28371/?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
